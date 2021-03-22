@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Grid, Typography, Avatar, Paper, Container } from '@material-ui/core' 
+import { Button, Grid, Typography, Avatar, Paper, Container } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import useStyles from './styles'
@@ -23,13 +23,14 @@ const ChangePassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(updatePassword(formData,history))
+        dispatch(updatePassword(formData, history))
+
     }
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
-   
-    
+
+
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
 
@@ -44,7 +45,7 @@ const ChangePassword = () => {
                     <Grid container spacing={2}>
 
                         <Input name='existingPassword' label='Old Password' handleChange={handleChange} autoFocus type='password' />
-                         <Input name='password' label='New Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
+                        <Input name='password' label='New Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
                         <Input name='confirmPassword' label='Confirm Password' handleChange={handleChange} type='password' />
                     </Grid>
                     <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>

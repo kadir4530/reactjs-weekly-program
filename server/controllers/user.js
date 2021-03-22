@@ -155,7 +155,7 @@ const updatepassword = async (req, res) => {
 
         const userId = req?.userId;
 
-        const { existingPassword, newPassword, confirmPassword } = req.body;
+        const { existingPassword, password, confirmPassword } = req.body;
 
         const existingUser = await User.findById(userId);
 
@@ -165,9 +165,9 @@ const updatepassword = async (req, res) => {
 
         if (!isPasswordCorrect) return res.status(400).json({ message: 'Invalid Password' })
 
-        if (newPassword !== confirmPassword) return res.status(400).json({ message: 'Passwords dont match' })
+        if (password !== confirmPassword) return res.status(400).json({ message: 'Passwords dont match' })
 
-        const hashedPassword = await bcrypt.hash(newPassword, 12);
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         const updatedUser = await User.findByIdAndUpdate(userId, { password: hashedPassword })
 
