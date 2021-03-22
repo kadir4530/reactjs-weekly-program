@@ -36,7 +36,7 @@ export const deleteActivity = (id) => async (dispatch) => {
 
         await api.deleteActivity(id);
 
-        dispatch({ type: actionTypes.DELETE_ACTIVITY, payload: { _id: id } })
+        dispatch({ type: actionTypes.DELETE_ACTIVITY, payload: { _id: id } }) 
     } catch (error) {
 
     }

@@ -15,11 +15,9 @@ function SelectActivity(props) {
 
     useEffect(() => {
         dispatch(getActivities)
-        if (!open) {
-            setValue(valueProp);
-        }
-        setData();
-    }, [valueProp, open, value]);
+        setValue(valueProp);
+        setData(valueProp);
+    }, [valueProp, open]);
 
     const handleEntering = () => {
         if (radioGroupRef.current != null) {
@@ -32,17 +30,23 @@ function SelectActivity(props) {
     };
 
     const handleOk = () => {
+        console.log('Ok')
         dispatch(setActivity(postData))
-        onClose(value);
+        onClose();
     };
 
     const handleChange = (e) => {
         setValue(e.target.value)
-
+        setData(e.target.value)
     };
 
-    const setData = () => {
-        const activity = activities.find(a => a._id == value)
+    const handleClear = () => {
+        setValue('');
+        setPostData({ dayId: props.selectedProgram.dayId, hourId: props.selectedProgram.hourId, activity: { _id: '', name: '' } })
+    }
+    const setData = (_id) => {
+        const activity = activities.find(a => a._id == _id)
+
         setPostData({ dayId: props.selectedProgram.dayId, hourId: props.selectedProgram.hourId, activity: { _id: activity?._id, name: activity?.name } })
     }
 
@@ -55,8 +59,9 @@ function SelectActivity(props) {
             aria-labelledby="confirmation-dialog-title"
             open={open}
             {...other}
+            fullWidth
         >
-            <DialogTitle id="confirmation-dialog-title">Activities</DialogTitle>
+            <DialogTitle id="confirmation-dialog-title" fullidth>Activities</DialogTitle>
             <DialogContent dividers>
                 <RadioGroup
                     ref={radioGroupRef}
@@ -71,9 +76,12 @@ function SelectActivity(props) {
                 </RadioGroup>
             </DialogContent>
             <DialogActions>
-                <Button autoFocus onClick={handleCancel} color="primary">
+                <Button onClick={handleClear} color="secondary">
+                    Clear
+            </Button>
+                <Button autoFocus onClick={handleCancel}>
                     Cancel
-        </Button>
+          </Button>
                 <Button onClick={handleOk} color="primary">
                     Ok
         </Button>

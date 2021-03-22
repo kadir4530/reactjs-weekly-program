@@ -9,8 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
-app.get('/ping', (req, res) => {
-    res.json({ message: 'Ping is OK' })
+app.get('/', (req, res) => {
+    res.json({ message: 'Hello To Weekly Program Api' })
 })
 
 const userRoute = require('./routes/user')

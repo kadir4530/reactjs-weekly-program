@@ -6,15 +6,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import useStyles from './styles.js';
-import ActivityForm from './ActivityForm.js' 
+import ActivityForm from './ActivityForm.js'
 import { deleteActivity } from '../../actions/activities'
-
+import { getProgram } from '../../actions/program'
 
 const Activities = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [currentAcitivity, setcurrentAcitivity] = useState({ _id: null, name: '' });
-    const [open, setOpen] = useState(false); 
+    const [open, setOpen] = useState(false);
     const activities = useSelector(state => state.activities)
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const Activities = () => {
     }, [dispatch])
 
     const handleClickOpen = () => {
-        setOpen(true); 
+        setOpen(true);
     };
 
 
@@ -33,9 +33,11 @@ const Activities = () => {
     };
 
     const deleteClick = (id) => {
-        dispatch(deleteActivity(id))
+        const confirmDelete = window.confirm('Aru you sure to delete?');
+        if (confirmDelete) {
+            dispatch(deleteActivity(id)).then(() => dispatch(getProgram()))
+        }
     }
-
 
     return (
         <div>
@@ -47,6 +49,8 @@ const Activities = () => {
                     <Typography variant="h6" className={classes.title} align="center">
                         Activities
                 </Typography>
+
+
                     <Button
                         variant="contained"
                         color="primary"
@@ -56,6 +60,7 @@ const Activities = () => {
 
                     >Add</Button>
 
+
                     <div className={classes.demo}>
 
                         <List id='list'>
@@ -63,17 +68,25 @@ const Activities = () => {
                                 activities &&
                                 activities.map((activity, index) => (
                                     <ListItem key={activity._id} >
+
                                         <ListItemText key={index}
                                             primary={activity.name}
+                                            style={{
+                                                'overflow': 'hidden',
+                                                'text-overflow': 'ellipsis'
+                                            }}
                                         />
+
                                         <Button className={classes.editButton}
                                             onClick={() => {
                                                 setcurrentAcitivity({ _id: activity._id, name: activity.name })
-                                                setOpen(true) 
+                                                setOpen(true)
                                             }
                                             }
                                         ><EditIcon /></Button>
+
                                         <Button onClick={() => { deleteClick(activity._id) }}><DeleteIcon /></Button>
+
                                     </ListItem>
                                 ))
                             }

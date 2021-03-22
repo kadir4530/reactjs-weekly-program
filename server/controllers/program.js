@@ -3,7 +3,7 @@ const Program = require('../models/program')
 const getPrograms = async (req, res) => {
     try {
 
-        const userId = req?.userId; 
+        const userId = req?.userId;
         if (!userId) return res.status(400).json('User not found')
 
 
@@ -33,13 +33,12 @@ const setActivity = async (req, res) => {
                 arrayFilters: [{ "day._id": dayId }, { "hour._id": hourId }],
                 multi: true,
             }
-
         )
         const updatedProgram = await Program.find({ userId });
 
         return res.status(200).json(updatedProgram)
 
-    } catch (error) { 
+    } catch (error) {
         return res.status(400).json(error)
     }
 }

@@ -29,17 +29,18 @@ const signin = async (req, res) => {
 
         if (!isPasswordCorrect) return res.status(400).json({ message: 'Invalid credentials' })
 
-        const token = jwt.sign({ email: existingUser.email, _id: existingUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ email: existingUser.email, _id: existingUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 
         res.status(200).json({ result: existingUser, token })
 
     } catch (error) {
+
         res.status(500).json('Something went wrong')
     }
 }
 
 // Sign UP
-const createUser = async (req, res) => { 
+const createUser = async (req, res) => {
     // If is it a google authentication add to Database
     try {
         if (req?.isGoogleAuth) {
@@ -49,7 +50,7 @@ const createUser = async (req, res) => {
 
             if (existingUser) {
 
-                const token = jwt.sign({ email: existingUser.email, _id: existingUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                const token = jwt.sign({ email: existingUser.email, _id: existingUser._id }, ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 
                 return res.status(200).json({ result: existingUser, token })
 
@@ -61,7 +62,7 @@ const createUser = async (req, res) => {
 
             const result = await User.create({ email, password: hashedPassword, name })
 
-            const token = jwt.sign({ email: result.email, _id: result._id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign({ email: result.email, _id: result._id }, ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 
             // create a new program template to mongodb automatically 
 
@@ -82,7 +83,7 @@ const createUser = async (req, res) => {
 
             const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` })
 
-            const token = jwt.sign({ email: result.email, _id: result._id }, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign({ email: result.email, _id: result._id }, ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 
             // create a new program template to mongodb automatically 
 
@@ -91,7 +92,7 @@ const createUser = async (req, res) => {
             res.status(200).json({ result, token })
         }
 
-    } catch (error) { 
+    } catch (error) {
         res.status(400).json(error)
     }
 }
@@ -116,6 +117,7 @@ const updateUser = async (req, res) => {
         return res.status(200).json('Updated')
 
     } catch (error) {
+
         return res.status(400).json(error)
 
     }
@@ -143,7 +145,7 @@ const deleteUser = async (req, res) => {
 
         return res.status(200).json('User deleted successfully')
 
-    } catch (error) { 
+    } catch (error) {
         return res.status(400).json(error)
     }
 }
@@ -151,23 +153,23 @@ const deleteUser = async (req, res) => {
 const updatepassword = async (req, res) => {
     try {
 
-        const _id = req.params.id;
+        const userId = req?.userId;
 
         const { existingPassword, newPassword, confirmPassword } = req.body;
 
-        const existingUser = await User.findById(_id);
+        const existingUser = await User.findById(userId);
 
         if (!existingUser) return res.status(400).json('User not found')
 
         const isPasswordCorrect = await bcrypt.compare(existingPassword, existingUser.password);
 
-        if (!isPasswordCorrect) return res.status(400).json('Invalid Password')
+        if (!isPasswordCorrect) return res.status(400).json({ message: 'Invalid Password' })
 
-        if (newPassword !== confirmPassword) return res.status(400).json('Passwords dont match')
+        if (newPassword !== confirmPassword) return res.status(400).json({ message: 'Passwords dont match' })
 
         const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-        const updatedUser = await User.findByIdAndUpdate(_id, { password: hashedPassword })
+        const updatedUser = await User.findByIdAndUpdate(userId, { password: hashedPassword })
 
         return res.status(200).json('Password updated successfully')
 

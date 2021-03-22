@@ -2,25 +2,30 @@ import React, { useEffect, useState } from "react";
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import { createActivity, updateActivity } from '../../actions/activities'
+import { getProgram } from "../../actions/program";
 
 
 
 export default function FormDialog(props) {
- 
+
   const { currentAcitivity, onClose, value: valueProp, open, ...other } = props;
   const [activity, setactivity] = useState({ name: props.currentAcitivity?.name, _id: props.currentAcitivity?._id });
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.currentAcitivity?._id
-      ? dispatch(updateActivity(props.currentAcitivity._id, activity))
-      : dispatch(createActivity({ name: activity.name }))
+    if (props.currentAcitivity?._id) {
+      dispatch(updateActivity(props.currentAcitivity._id, activity))
+        .then(() => dispatch(getProgram()))
+    }
+    else dispatch(createActivity({ name: activity.name }))
+
     handleClose();
   }
-  const handleClose = () => { 
+  const handleClose = () => {
     onClose();
   };
+
   useEffect(() => {
     setactivity({ name: props.currentAcitivity?.name, _id: props.currentAcitivity?._id })
 
@@ -36,7 +41,7 @@ export default function FormDialog(props) {
         fullWidth
       >
         <form onSubmit={handleSubmit}>
-          <DialogTitle id="form-dialog-title">New Activity</DialogTitle>
+          <DialogTitle id="form-dialog-title">{props.currentAcitivity?._id ? 'Update' : 'New'} Activity</DialogTitle>
           <DialogContent   >
             <DialogContentText >
               Please enter activity Name
@@ -61,6 +66,7 @@ export default function FormDialog(props) {
             <Button disabled={(activity?.name && activity.name.trim()) ? false : true} type="submit" color="primary">
               Save
             </Button>
+
           </DialogActions>
         </form>
       </Dialog>

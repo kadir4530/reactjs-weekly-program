@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import reducer from './reducers/index'
 
- 
+
 const composeEnhancers =
   typeof window === 'object' &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -21,7 +21,7 @@ const enhancer = composeEnhancers(
 );
 const store = createStore(reducer, enhancer);
 
-// const store = createStore(reducer, compose(applyMiddleware(thunk)))
+// const store = createStore(reducer, compose(applyMiddleware(thunk))) 
 
 ReactDOM.render(
   <Provider store={store}>

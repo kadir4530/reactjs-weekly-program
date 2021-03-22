@@ -24,13 +24,12 @@ const Auth = () => {
     const [formData, setFormData] = useState(initialState)
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
         if (isSignup) {
-             dispatch(signUp(formData, history))
+            dispatch(signUp(formData, history))
         }
         else {
-             dispatch(signIn(formData, history))
+            dispatch(signIn(formData, history))
         }
 
     }

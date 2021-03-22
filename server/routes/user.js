@@ -14,6 +14,6 @@ router.post('/signin', signin)
 router.post('/signup', createUser);
 router.post('/signup/google', auth, createUser);
 //Update Password
-router.post('/updatepassword/:id', updatepassword)
+router.post('/updatepassword/', auth, updatepassword)
 
 module.exports = router;

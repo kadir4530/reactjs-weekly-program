@@ -29,5 +29,31 @@ const createTemplate = async (userId) => {
     }
 }
 
-module.exports = { createTemplate }
+const removeFromProgramDeletedActivities = async (userId, activityId) => {
+    try {
+        await Program.updateMany(
+            { 'userId': userId, },
+            { $set: { "days.$[day].hour.$[hour].activity": { _id: '', name: '' } } },
+            { arrayFilters: [{ "day._id": { "$exists": true } }, { "hour.activity._id": activityId }] }
+        )
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+const editProgramActivity = async (userId, newActivity) => {
+    try {
+        await Program.updateMany(
+            { 'userId': userId, },
+            { $set: { "days.$[day].hour.$[hour].activity": { _id: newActivity._id, name: newActivity.name } } },
+            { arrayFilters: [{ "day._id": { "$exists": true } }, { "hour.activity._id": newActivity._id }] }
+        )
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports = { createTemplate, removeFromProgramDeletedActivities, editProgramActivity }
 

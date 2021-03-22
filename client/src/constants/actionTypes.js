@@ -7,6 +7,7 @@ export const DELETE_ACTIVITY = "DELETE_ACTIVITY";
 //Auth
 export const LOGOUT = "LOGOUT";
 export const AUTH = "AUTH"
+export const UPDATE_PASSWORD = "UPDATE_PASSWORD"
 //Program
 export const GET_PROGRAM = "GET_PROGRAM";
 export const SET_ACTIVITY = "SET_ACTIVITY";

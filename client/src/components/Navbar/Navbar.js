@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { AppBar, Typography, Toolbar, Button, Avatar } from '@material-ui/core';
+import { AppBar, Typography, Toolbar, Button, Avatar, IconButton, Menu, MenuItem } from '@material-ui/core';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 // import memories from "../../images/memories.png";
 import useStyles from './styles.js';
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -13,6 +14,17 @@ const Navbar = () => {
     const history = useHistory();
     const classes = useStyles();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
     const dispatch = useDispatch();
     useEffect(() => {
         const token = user?.token;
@@ -28,6 +40,7 @@ const Navbar = () => {
     const logOut = () => {
         dispatch({ type: actionTypes.LOGOUT });
         setUser(null);
+        handleClose();
         history.push('/');
     }
     return (
@@ -41,15 +54,46 @@ const Navbar = () => {
                 </div>
                 <Toolbar className={classes.toolbar}>
                     {user ? (
-                        <div className={classes.profile}>
-                            <Avatar className={classes.purple} alt={user.result.name} src={user.result.imageUrl}>{user.result.name.charAt(0)}</Avatar>
-                            <Typography className={classes.userName} variant='h6'>{user.result.name}</Typography>
-                            <Button className={classes.logout} color='secondary' onClick={logOut}>Logout</Button>
+                        <div>
+
+                            <div className={classes.profile}>
+                                <Avatar className={classes.purple} alt={user.result.name} src={user.result.imageUrl}>{user.result.name.charAt(0)}</Avatar>
+                                <Typography className={classes.userName} variant='h6'>{user.result.name}</Typography>
+
+                                <IconButton
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={handleMenu}
+                                    color="inherit"
+                                >
+                                    <AccountCircle />
+                                </IconButton>
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={open}
+                                    onClose={handleClose}
+                                >
+                                    <MenuItem className={classes.logout} color='secondary' onClick={logOut}>Logout</MenuItem>
+                                    <MenuItem component={Link} to='/changepassword' color='primary' onClick={handleClose}>Change Password</MenuItem>
+                                </Menu>
+                            </div>
                         </div>
                     ) :
                         (
                             <Button component={Link} to='/auth' variant='contained' color='primary'>Sign In</Button>
                         )}
+
                 </Toolbar>
             </AppBar>
         </div>

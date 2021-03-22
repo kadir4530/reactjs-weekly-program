@@ -1,4 +1,5 @@
 const Activity = require('../models/activities')
+const { removeFromProgramDeletedActivities, editProgramActivity } = require('../workers/programWorker')
 
 const getActivities = async (req, res) => {
     try {
@@ -39,19 +40,22 @@ const updateActivity = async (req, res) => {
     try {
         const _id = req.params.id;
 
+        const userId = req?.userId;
+
         const { name } = req.body;
- 
+
         const existingActivity = await Activity.findById(_id);
 
         if (!existingActivity) return res.status(400).json('Activity not found')
 
         const updatedActivity = await Activity.findByIdAndUpdate(_id, { name }, { new: true })
 
+        userId && await editProgramActivity(userId, updatedActivity)
+
         return res.status(200).json(updatedActivity)
 
     } catch (error) {
         return res.status(400).json(error)
-
     }
 
 }
@@ -60,17 +64,20 @@ const deleteActivity = async (req, res) => {
     try {
         const _id = req.params.id;
 
+        const userId = req?.userId;
+
         const existingActivity = await Activity.findById(_id);
 
         if (!existingActivity) return res.status(400).json('Activity not found')
 
         await Activity.findByIdAndRemove(_id);
 
+        userId && await removeFromProgramDeletedActivities(userId, _id);
+
         return res.status(200).json('Activity deleted successfully')
 
     } catch (error) {
         return res.status(400).json(error)
-
     }
 }
 
